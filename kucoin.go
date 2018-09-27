@@ -606,6 +606,57 @@ func (b *Kucoin) CreateWithdrawalApply(coin, address string, amount float64) (wi
 	}
 	var rawRes rawWithdrawal
 	err = json.Unmarshal(r, &rawRes)
+	if err != nil {
+		return
+	}
+	if !rawRes.Success {
+		err = errors.New(string(r))
+		return
+	}
+	withdrawalApply = rawRes.Data
+	return
+}
+
+// CreateWithdrawalApplyByString is used to create withdrawal for specific coin
+// at Kucoin along with other meta data.
+// coin, address and amount are required parameters.
+// This CreateWithdrawalApplyByString version is fix precise problem.
+// Example:
+// - coin = KCS
+// - address = example_address
+// - amount 0.68
+// Result:
+// - Nothing.
+func (b *Kucoin) CreateWithdrawalApplyByString(coin, address string, amount string) (withdrawalApply Withdrawal, err error) {
+	if len(coin) < 1 || len(address) < 1 || amount == "" {
+		return withdrawalApply, fmt.Errorf("The not all required parameters are presented")
+	}
+	payload := map[string]string{}
+	payload["coin"] = coin
+	payload["address"] = address
+	payload["amount"] = amount
+
+	r, err := b.client.do("POST", fmt.Sprintf(
+		"account/%s/withdraw/apply", strings.ToUpper(coin)), payload, true)
+	if err != nil {
+		return
+	}
+	var response interface{}
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if err = handleErr(response); err != nil {
+		return
+	}
+	var rawRes rawWithdrawal
+	err = json.Unmarshal(r, &rawRes)
+	if err != nil {
+		return
+	}
+	if !rawRes.Success {
+		err = errors.New(string(r))
+		return
+	}
 	withdrawalApply = rawRes.Data
 	return
 }

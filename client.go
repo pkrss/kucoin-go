@@ -93,6 +93,11 @@ func (c *client) do(method, resource string, payload map[string]string, authNeed
 			postValues.Set(key, value)
 		}
 		queryString = postValues.Encode()
+		// fix for withdraw address have special characters
+		queryString, err = url.QueryUnescape(queryString)
+		if err != nil {
+			return nil, err
+		}
 		req, err = http.NewRequest(
 			method, Url.String(), strings.NewReader(
 				queryString,
