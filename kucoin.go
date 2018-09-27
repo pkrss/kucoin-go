@@ -579,7 +579,7 @@ func (b *Kucoin) OrderDetails(symbol, side, orderOid string, limit, page int) (o
 // coin, address and amount are required parameters.
 // Example:
 // - coin = KCS
-// - address = example_address
+// - address = example_address, Remark: if this coin need paymentID, address=address@paymentID, by pkrss.
 // - amount 0.68
 // Result:
 // - Nothing.
@@ -623,7 +623,7 @@ func (b *Kucoin) CreateWithdrawalApply(coin, address string, amount float64) (wi
 // This CreateWithdrawalApplyByString version is fix precise problem.
 // Example:
 // - coin = KCS
-// - address = example_address
+// - address = example_address, Remark: if this coin need paymentID, address=address@paymentID, by pkrss.
 // - amount 0.68
 // Result:
 // - Nothing.
