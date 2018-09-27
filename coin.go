@@ -14,6 +14,11 @@ type Coin struct {
 	EnableWithdraw    bool        `json:"enableWithdraw"`
 	EnableDeposit     bool        `json:"enableDeposit"`
 	Coin              string      `json:"coin"`
+	OrgAddress        string      `json:"orgAddress"`
+	UserAddressName   string      `json:"userAddressName"`
+	Enable            bool        `json:"enable"`
+	CoinType          string      `json:"coinType"`
+	TxURL             string      `json:"txUrl"`
 }
 
 type rawCoins struct {
