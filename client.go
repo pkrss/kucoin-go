@@ -4,6 +4,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	b64 "encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -141,6 +142,29 @@ func (c *client) do(method, resource string, payload map[string]string, authNeed
 	if resp.StatusCode != 200 {
 		err = errors.New(resp.Status)
 	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	var rawRes struct {
+		Code      string `json:"code"`
+		Msg       string `json:"msg"`
+		Success   bool   `json:"success"`
+		Timestamp int64  `json:"timestamp"`
+	}
+	if err = json.Unmarshal(data, &rawRes); err != nil {
+		return nil, err
+	}
+	if !rawRes.Success {
+		if rawRes.Msg != "" {
+			err = errors.New(rawRes.Msg)
+		} else {
+			err = errors.New(string(data))
+		}
+		return nil, err
+	}
+
 	return data, err
 }
 
